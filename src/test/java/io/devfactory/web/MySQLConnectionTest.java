@@ -4,8 +4,14 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.sql.DataSource;
 
 public class MySQLConnectionTest {
+
+	private static final Logger logger = LoggerFactory.getLogger(MySQLConnectionTest.class);
 
 	// 5.x
 	private static final String DRIVER = "com.mysql.jdbc.Driver";		
@@ -24,9 +30,10 @@ public class MySQLConnectionTest {
 		Class.forName(DRIVER);
 		
 		try (Connection con = DriverManager.getConnection(URL, USER, PW)) {
-			System.out.println(con);
+			logger.debug("{}", con);
+
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("{}", e);
 		}
 	}
 }
