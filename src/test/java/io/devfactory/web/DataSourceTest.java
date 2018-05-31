@@ -15,7 +15,7 @@ import java.sql.Connection;
 @ContextConfiguration(locations = {"file:**/root-context.xml"})
 public class DataSourceTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(DataSource.class);
+    private static final Logger logger = LoggerFactory.getLogger(DataSourceTest.class);
 
     @Inject
     private DataSource dataSource;
