@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.devfactory.persistence.BoardMapper">
+
+    <insert id="insert" parameterType="BoardVO">
+      INSERT INTO tbl_board(title, content, writer)
+      VALUES(#{title}, #{content}, #{writer})
+    </insert>
+
+    <update id="update" parameterType="BoardVO">
+      UPDATE tbl_board SET title = #{title}, content = #{content}
+      WHERE bno = #{bno}
+    </update>
+
+    <delete id="delete" parameterType="int">
+       DELETE FROM tbl_board WHERE bno = #{bno}
+    </delete>
+
+    <select id="selectAll" resultType="hashmap">
+      SELECT bno, title, content, writer, regdate, viewcnt
+      FROM tbl_board
+      WHERE bno &gt; 0
+      ORDER BY bno DESC, regdate DESC
+    </select>
+
+    <select id="selectByBoard" parameterType="int" resultType="hashmap">
+      SELECT bno, title, content, writer, regdate, viewcnt
+      FROM tbl_board
+      WHERE bno = #{bno}
+    </select>
+
+</mapper>

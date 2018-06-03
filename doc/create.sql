@@ -1,0 +1,19 @@
+CREATE TABLE tbl_member (
+	userid VARCHAR(50) NOT NULL,
+  userpw VARCHAR(50) NOT NULL,
+  username VARCHAR(50) NOT NULL,
+  email VARCHAR(100),
+  regdate TIMESTAMP DEFAULT NOW(),
+  updatedate TIMESTAMP DEFAULT NOW(),
+  PRIMARY KEY(userid)
+);
+
+CREATE TABLE tbl_board (
+	bno INT NOT NULL AUTO_INCREMENT,
+  title VARCHAR(200) NOT NULL,
+  content TEXT NULL,
+  writer VARCHAR(50) NOT NULL,
+  regdate TIMESTAMP NOT NULL DEFAULT NOW(),
+  viewcnt INT DEFAULT 0,
+  PRIMARY KEY(bno)
+);

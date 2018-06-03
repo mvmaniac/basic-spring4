@@ -28,7 +28,7 @@
 
     <Loggers>
         <!-- Application Loggers -->
-        <Logger name="io.devfactory.web" level="DEBUG" additivity="false">
+        <Logger name="io.devfactory" level="DEBUG" additivity="false">
             <AppenderRef ref="File"/>
             <AppenderRef ref="Console"/>
         </Logger>
