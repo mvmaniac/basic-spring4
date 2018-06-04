@@ -16,9 +16,5 @@
     <script type="text/javascript" src="<c:url value="/js/bootstrap/4.1.1/bootstrap.min.js"/>" ></script>
     <script type="text/javascript" src="<c:url value="/js/popper/1.14.3/popper.min.js"/>" ></script>
     <script type="text/javascript" src="<c:url value="/js/adminlte/3.0.0-alpha2/adminlte.min.js"/>" ></script>
-
-    <script type="text/javascript" src="<c:url value="/js/sample/Chart.min.js"/>" ></script>
-    <script type="text/javascript" src="<c:url value="/js/sample/demo.js"/>" ></script>
-    <script type="text/javascript" src="<c:url value="/js/sample/dashboard3.js"/>" ></script>
 </body>
 </html>
