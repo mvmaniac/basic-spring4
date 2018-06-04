@@ -1,4 +1,4 @@
-package io.devfactory.web;
+package io.devfactory;
 
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
