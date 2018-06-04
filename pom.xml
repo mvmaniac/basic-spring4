@@ -17,6 +17,7 @@
         <java.version>1.8</java.version>
 
         <org.springframework.version>4.3.17.RELEASE</org.springframework.version>
+        <tiles.version>3.0.8</tiles.version>
         <dbcp2.version>2.3.0</dbcp2.version>
         <org.aspectj.version>1.9.1</org.aspectj.version>
         <mybaits.version>3.4.6</mybaits.version>
@@ -52,6 +53,23 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <version>${org.springframework.version}</version>
+        </dependency>
+
+        <!-- Apache Tiles -->
+        <dependency>
+            <groupId>org.apache.tiles</groupId>
+            <artifactId>tiles-core</artifactId>
+            <version>${tiles.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tiles</groupId>
+            <artifactId>tiles-jsp</artifactId>
+            <version>${tiles.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tiles</groupId>
+            <artifactId>tiles-template</artifactId>
+            <version>${tiles.version}</version>
         </dependency>
 
         <!-- Apache Common -->
