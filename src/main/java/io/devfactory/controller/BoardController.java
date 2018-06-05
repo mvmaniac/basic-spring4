@@ -1,11 +1,14 @@
 package io.devfactory.controller;
 
+import io.devfactory.common.paging.Criteria;
+import io.devfactory.common.paging.PagingHelper;
 import io.devfactory.domain.BoardVO;
 import io.devfactory.service.BoardService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -56,10 +59,11 @@ public class BoardController {
     }
 
     @RequestMapping(value = "/modify", method = RequestMethod.GET)
-    public String modifyGet(@RequestParam("bno") int bno, Model model) {
+    public String modifyGet(@RequestParam("bno") int bno, @ModelAttribute("cri") Criteria cri, Model model) {
 
         logger.debug("/board/modify get");
         logger.debug("bno = {}", bno);
+        logger.debug("cri = {}", cri);
 
         BoardVO vo = new BoardVO();
 
@@ -74,10 +78,11 @@ public class BoardController {
     }
 
     @RequestMapping(value = "/modify", method = RequestMethod.POST)
-    public String modifyPost(BoardVO vo, RedirectAttributes rttr) {
+    public String modifyPost(BoardVO vo, Criteria cri, RedirectAttributes rttr) {
 
         logger.debug("/board/modify post...");
         logger.debug("board = {}", vo);
+        logger.debug("cri = {}", cri);
 
         String msg;
 
@@ -90,15 +95,19 @@ public class BoardController {
             msg = "fail";
         }
 
+        rttr.addAttribute("page", cri.getPage());
+        rttr.addAttribute("perPageNum", cri.getPerPageNum());
+
         rttr.addFlashAttribute("result", msg);
         return "redirect:/board/listAll";
     }
 
     @RequestMapping(value = "/remove", method = RequestMethod.POST)
-    public String remove(@RequestParam("bno") int bno, RedirectAttributes rttr) {
+    public String remove(@RequestParam("bno") int bno, Criteria cri, RedirectAttributes rttr) {
 
         logger.debug("/board/remove");
         logger.debug("bno = {}", bno);
+        logger.debug("cri = {}", cri);
 
         String msg;
 
@@ -111,19 +120,40 @@ public class BoardController {
             msg = "fail";
         }
 
+        rttr.addAttribute("page", cri.getPage());
+        rttr.addAttribute("perPageNum", cri.getPerPageNum());
+
         rttr.addFlashAttribute("result", msg);
+        rttr.addFlashAttribute("delete", "Y");
+
         return "redirect:/board/listAll";
     }
 
     @RequestMapping(value = "/listAll", method = RequestMethod.GET)
-    public String listAll(Model model) {
+    public String listAll(Criteria cri, @ModelAttribute("delete") String delete, Model model) {
 
         logger.debug("/board/listAll...");
+        logger.debug("cri = {}", cri);
+        logger.debug("delete = {}", delete);
 
         List<BoardVO> list = new ArrayList<>();
 
         try {
-            list = boardService.selectAll();
+            list = boardService.selectByCriteria(cri);
+
+            int totalCount = boardService.totalCount(cri);
+
+            // 삭제에서 넘어왔고 리스트 목록이 없다면 한번더 검색함
+            if (delete.equals("Y") && list.isEmpty()) {
+
+                cri.setPage(cri.getPage() - 1);
+
+                list = boardService.selectByCriteria(cri);
+                totalCount = boardService.totalCount(cri);
+            }
+
+            model.addAttribute("paging", PagingHelper.getPagingInfo(totalCount, cri, 5));
+
         } catch (Exception e) {
             logger.error("/board/listAll error ", e);
         }
@@ -133,10 +163,11 @@ public class BoardController {
     }
 
     @RequestMapping(value = "/read", method = RequestMethod.GET)
-    public String read(@RequestParam("bno") int bno, Model model) {
+    public String read(@RequestParam("bno") int bno, @ModelAttribute("cri") Criteria cri, Model model) {
 
         logger.debug("/board/read");
         logger.debug("bno = {}", bno);
+        logger.debug("cri = {}", cri);
 
         BoardVO vo = new BoardVO();
 

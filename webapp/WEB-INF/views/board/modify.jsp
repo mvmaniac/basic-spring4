@@ -34,6 +34,8 @@
                     <div class="card-body">
                         <form role="form" method="post" id="frmModify">
                             <input type="hidden" id="bno" name="bno" value="${boardVO.bno}" />
+                            <input type="hidden" id="page" name="page" value="${cri.page}" />
+                            <input type="hidden" id="perPageNum" name="perPageNum" value="${cri.perPageNum}" />
                             <div class="form-group">
                                 <label for="title">Title</label>
                                 <input type="text" class="form-control" id="title" name="title" value="${boardVO.title}" />
@@ -91,11 +93,11 @@
         });
 
         $cancel.click(function () {
-            self.location.href = "read?bno="+ $("#bno").val()
+            self.location.href = "read?bno="+ $("#bno").val() +"&page="+ $("#page").val() +"&perPageNum="+ $("#perPageNum").val()
         });
 
         $list.click(function () {
-            self.location.href = "listAll";
+            self.location.href = "listAll?page="+ $("#page").val() +"&perPageNum="+ $("#perPageNum").val();
         });
     }
 </script>

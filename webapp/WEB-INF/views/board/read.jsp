@@ -61,6 +61,8 @@
 
 <form role="form" id="frmRead">
     <input type="hidden" name="bno" value="${boardVO.bno}" />
+    <input type="hidden" name="page" value="${cri.page}" />
+    <input type="hidden" name="perPageNum" value="${cri.perPageNum}" />
 </form>
 
 <script type="text/javascript">
@@ -101,7 +103,9 @@
         });
 
         $list.click(function () {
-            self.location.href = "listAll";
+
+            $form.attr("action", "listAll");
+            $form.submit();
         });
     }
 </script>

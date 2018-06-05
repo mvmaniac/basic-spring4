@@ -48,14 +48,16 @@
                                     </tr>
                                 </c:when>
                                 <c:otherwise>
+                                    <c:set var="rowNum" value="${paging.totalRowCount - ((paging.criteria.page - 1) * paging.criteria.perPageNum)}" />
                                     <c:forEach var="board" items="${list}">
                                         <tr>
-                                            <td>${board.bno}</td>
-                                            <td><a href="<c:url value="/board/read?bno=${board.bno}" />">${board.title}</a></td>
+                                            <td>${rowNum}</td>
+                                            <td><a href="<c:url value="/board/read?bno=${board.bno}&${paging.makeQuery(paging.criteria.page)}" />">${board.title}</a></td>
                                             <td>${board.writer}</td>
                                             <td><fmt:formatDate pattern="yyyy-MM-dd HH:mm" value="${board.regdate}" /></td>
                                             <td><span class="badge bg-red">${board.viewcnt}</span></td>
                                         </tr>
+                                        <c:set var="rowNum" value="${rowNum - 1}" />
                                     </c:forEach>
                                 </c:otherwise>
                             </c:choose>
@@ -63,13 +65,39 @@
                     </div>
                     <div class="card-footer clearfix">
                         <button type="button" class="btn btn-primary btn-sm float-left" id="register">Register</button>
-                        <ul class="pagination pagination-sm m-0 float-right">
-                            <li class="page-item"><a class="page-link" href="#">&laquo;</a></li>
-                            <li class="page-item"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
-                        </ul>
+                        <c:if test="${not empty list}">
+                            <ul class="pagination pagination-sm m-0 float-right">
+                                <c:if test="${paging.showFirst}">
+                                    <li class="page-item"><a class="page-link" href="<c:url value="listAll?${paging.makeQuery(1)}" />">처음</a></li>
+                                </c:if>
+
+                                <c:if test="${paging.showPrevMore}">
+                                    <li class="page-item"><a class="page-link" href="<c:url value="listAll?${paging.makeQuery(paging.prevMorePage)}" />">&laquo;</a></li>
+                                </c:if>
+
+                                <c:if test="${paging.showPrev}">
+                                    <li class="page-item"><a class="page-link" href="<c:url value="listAll?${paging.makeQuery(paging.prevPage)}" />">&lt;</a></li>
+                                </c:if>
+
+                                <c:forEach begin="${paging.startPage}" end="${paging.endPage}" step="1" var="idx">
+                                    <li class="page-item <c:out value="${paging.selectPage == idx ? 'active': ''}" />">
+                                        <a class="page-link" href="<c:url value="listAll?${paging.makeQuery(idx)}" />">${idx}</a>
+                                    </li>
+                                </c:forEach>
+
+                                <c:if test="${paging.showNext}">
+                                    <li class="page-item"><a class="page-link" href="<c:url value="listAll?${paging.makeQuery(paging.nextPage)}" />">&gt;</a></li>
+                                </c:if>
+
+                                <c:if test="${paging.showNextMore}">
+                                    <li class="page-item"><a class="page-link" href="<c:url value="listAll?${paging.makeQuery(paging.nextMorePage)}" />">&raquo;</a></li>
+                                </c:if>
+
+                                <c:if test="${paging.showLast}">
+                                    <li class="page-item"><a class="page-link" href="<c:url value="listAll?${paging.makeQuery(paging.totalPageCount)}" />">마지막</a></li>
+                                </c:if>
+                            </ul>
+                        </c:if>
                     </div>
                 </div>
             </div>
