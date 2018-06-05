@@ -41,6 +41,7 @@
 		<beans:property name="order" value="2" />
 	</beans:bean>
 
+	<context:component-scan base-package="io.devfactory.common" />
 	<context:component-scan base-package="io.devfactory.controller" />
 	<context:component-scan base-package="io.devfactory.service" />
 
