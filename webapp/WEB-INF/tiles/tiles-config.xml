@@ -21,6 +21,9 @@
         </put-list-attribute>
     </definition>
 
+    <definition name="index" extends="layout">
+        <put-attribute name="content" value="/WEB-INF/views/home.jsp" />
+    </definition>
     <definition name="*/*" extends="layout">
         <put-attribute name="content" value="/WEB-INF/views/{1}/{2}.jsp" />
     </definition>
