@@ -3,6 +3,7 @@
 <configuration>
 
     <typeAliases>
+        <package name="io.devfactory.common.paging" />
         <package name="io.devfactory.domain" />
     </typeAliases>
 
