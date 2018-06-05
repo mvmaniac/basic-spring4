@@ -1,8 +1,6 @@
 <%@ page contentType="text/html;charset=utf-8" pageEncoding="utf-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<%@include file="include/header.jsp" %>
-
 <!-- content header (page header) -->
 <div class="content-header">
 	<div class="container-fluid">
@@ -12,7 +10,7 @@
 			</div>
 			<div class="col-sm-6">
 				<ol class="breadcrumb float-sm-right">
-					<li class="breadcrumb-item"><a href="#">Home</a></li>
+					<li class="breadcrumb-item"><a href="<c:url value="/" />">Home</a></li>
 					<li class="breadcrumb-item active">Dashboard v3</li>
 				</ol>
 			</div>
@@ -271,6 +269,3 @@
 	<!-- /.container-fluid -->
 </div>
 <!-- // main content -->
-
-<%@include file="include/footer.jsp" %>
-

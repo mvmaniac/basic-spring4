@@ -1,4 +1,7 @@
+<%--suppress XmlPathReference ELValidationInJSP ES6ConvertVarToLetConst --%>
 <%@ page contentType="text/html;charset=utf-8" pageEncoding="utf-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <!-- content header (page header) -->
 <section class="content-header">
@@ -9,7 +12,7 @@
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item"><a href="<c:url value="/" />">Home</a></li>
                     <li class="breadcrumb-item active">Board List</li>
                 </ol>
             </div>
@@ -38,46 +41,24 @@
                                 <th>RegDate</th>
                                 <th style="width: 40px">ViewCnt</th>
                             </tr>
-                            <tr>
-                                <td>1.</td>
-                                <td>Update software</td>
-                                <td>
-                                    <div class="progress progress-xs">
-                                        <div class="progress-bar progress-bar-danger" style="width: 55%"></div>
-                                    </div>
-                                </td>
-                                <td><span class="badge bg-danger">55%</span></td>
-                            </tr>
-                            <tr>
-                                <td>2.</td>
-                                <td>Clean database</td>
-                                <td>
-                                    <div class="progress progress-xs">
-                                        <div class="progress-bar bg-warning" style="width: 70%"></div>
-                                    </div>
-                                </td>
-                                <td><span class="badge bg-warning">70%</span></td>
-                            </tr>
-                            <tr>
-                                <td>3.</td>
-                                <td>Cron job running</td>
-                                <td>
-                                    <div class="progress progress-xs progress-striped active">
-                                        <div class="progress-bar bg-primary" style="width: 30%"></div>
-                                    </div>
-                                </td>
-                                <td><span class="badge bg-primary">30%</span></td>
-                            </tr>
-                            <tr>
-                                <td>4.</td>
-                                <td>Fix and squish bugs</td>
-                                <td>
-                                    <div class="progress progress-xs progress-striped active">
-                                        <div class="progress-bar bg-success" style="width: 90%"></div>
-                                    </div>
-                                </td>
-                                <td><span class="badge bg-success">90%</span></td>
-                            </tr>
+                            <c:choose>
+                                <c:when test="${empty list}">
+                                    <tr>
+                                        <td colspan="6" class="text-center font-weight-bold">등록된 글이 없습니다.</td>
+                                    </tr>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:forEach var="board" items="${list}">
+                                        <tr>
+                                            <td>${board.bno}</td>
+                                            <td><a href="<c:url value="/board/read?bno=${board.bno}" />">${board.title}</a></td>
+                                            <td>${board.writer}</td>
+                                            <td><fmt:formatDate pattern="yyyy-MM-dd HH:mm" value="${board.regdate}" /></td>
+                                            <td><span class="badge bg-red">${board.viewcnt}</span></td>
+                                        </tr>
+                                    </c:forEach>
+                                </c:otherwise>
+                            </c:choose>
                         </table>
                     </div>
                     <div class="card-footer clearfix">
@@ -101,8 +82,6 @@
 
 <input type="hidden" value="${result}" id="result" />
 
-<%--suppress ES6ConvertVarToLetConst --%>
-<%--TODO: 유효성 체크, 모달창 넣기 --%>
 <script type="text/javascript">
 
     window.onload = function() {
@@ -113,13 +92,15 @@
     
     function initPage() {
 
-        var result = $("#result").val();
+        var $result = $("#result"),
+            value = $result.val();
 
-        if (!result) { return; }
+        if (!value) { return; }
 
-        if (result.toLowerCase() === "success") {
-            alert("처리완료");
-        }
+        // TODO: 모달창 넣기
+        alert(value);
+
+        $result.val("");
     }
 
     function initEvent() {
@@ -127,7 +108,7 @@
         var $register = $("#register");
 
         $register.click(function () {
-           location.href = "register";
+           self.location.href = "register";
         });
     }
 </script>

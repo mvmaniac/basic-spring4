@@ -9,10 +9,10 @@
         <a class="nav-link" data-widget="pushmenu" href="#"><i class="fa fa-bars"></i></a>
     </li>
     <li class="nav-item d-none d-sm-inline-block">
-        <a href="<c:url value="/"/>" class="nav-link">Home</a>
+        <a href="<c:url value="/" />" class="nav-link">Home</a>
     </li>
     <li class="nav-item d-none d-sm-inline-block">
-        <a href="<c:url value="/board/listAll"/>" class="nav-link">Board</a>
+        <a href="<c:url value="/board/listAll" />" class="nav-link">Board</a>
     </li>
 </ul>
 
