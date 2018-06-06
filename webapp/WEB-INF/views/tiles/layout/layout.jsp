@@ -17,7 +17,7 @@
         <link type="text/css" rel="stylesheet" href="<c:url value="${href}"/>"/>
     </c:forEach>
 </head>
-<body class="hold-transition sidebar-mini">
+<body class="hold-transition sidebar-mini" style="min-width:485px">
 
     <!-- wrapper -->
     <div class="wrapper">

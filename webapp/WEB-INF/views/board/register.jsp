@@ -1,4 +1,4 @@
-<%--suppress ES6ConvertVarToLetConst --%>
+<%--suppress ELValidationInJSP ES6ConvertVarToLetConst --%>
 <%@ page contentType="text/html;charset=utf-8" pageEncoding="utf-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
@@ -60,6 +60,13 @@
 </section>
 <!-- // main content -->
 
+<form role="form" id="frmList">
+    <input type="hidden" name="page" value="${cri.page}" />
+    <input type="hidden" name="perPageNum" value="${cri.perPageNum}" />
+    <input type="hidden" name="searchType" value="${cri.searchType}" />
+    <input type="hidden" name="keyword" value="${cri.keyword}" />
+</form>
+
 <script type="text/javascript">
 
     window.onload = function() {
@@ -72,7 +79,8 @@
 
     function initEvent() {
 
-        var $form = $("#frmRegister"),
+        var $frmRegister = $("#frmRegister"),
+            $frmList = $("#frmList"),
             $save = $("#save"),
             $list = $("#list");
 
@@ -81,11 +89,13 @@
 
             evt.preventDefault();
             alert("submit");
-            $form.submit();
+            $frmRegister.submit();
         });
 
         $list.click(function () {
-            self.location.href = "listAll";
+
+            $frmList.attr("action", "listAll");
+            $frmList.submit();
         });
     }
 </script>

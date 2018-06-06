@@ -1,6 +1,7 @@
 package io.devfactory.service;
 
 import io.devfactory.common.paging.Criteria;
+import io.devfactory.common.paging.SearchCriteria;
 import io.devfactory.domain.BoardVO;
 import io.devfactory.persistence.BoardMapper;
 import org.springframework.stereotype.Service;
@@ -20,8 +21,13 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public int totalCount(Criteria cri) throws Exception {
-        return boardMapper.totalCount(cri);
+    public int totalCount() throws Exception {
+        return boardMapper.totalCount();
+    }
+
+    @Override
+    public int totalCountBySearch(SearchCriteria cri) throws Exception {
+        return boardMapper.totalCountBySearch(cri);
     }
 
     @Override
@@ -47,6 +53,11 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public List<BoardVO> selectByCriteria(Criteria cri) throws Exception {
         return boardMapper.selectByCriteria(cri);
+    }
+
+    @Override
+    public List<BoardVO> selectBySearch(SearchCriteria cri) throws Exception {
+        return boardMapper.selectBySearch(cri);
     }
 
     @Override

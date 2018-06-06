@@ -36,6 +36,8 @@
                             <input type="hidden" id="bno" name="bno" value="${boardVO.bno}" />
                             <input type="hidden" id="page" name="page" value="${cri.page}" />
                             <input type="hidden" id="perPageNum" name="perPageNum" value="${cri.perPageNum}" />
+                            <input type="hidden" id="searchType" name="searchType" value="${cri.searchType}" />
+                            <input type="hidden" id="keyword" name="keyword" value="${cri.keyword}" />
                             <div class="form-group">
                                 <label for="title">Title</label>
                                 <input type="text" class="form-control" id="title" name="title" value="${boardVO.title}" />
@@ -46,7 +48,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="writer">Writer</label>
-                                <input type="text" class="form-control" id="writer" name="writer" value="${boardVO.writer}" />
+                                <input type="text" class="form-control" id="writer" name="writer" value="${boardVO.writer}" readonly />
                             </div>
                         </form>
                     </div>
@@ -93,11 +95,16 @@
         });
 
         $cancel.click(function () {
-            self.location.href = "read?bno="+ $("#bno").val() +"&page="+ $("#page").val() +"&perPageNum="+ $("#perPageNum").val()
+            self.location.href = "read?bno="+ $("#bno").val() +"&"+ searchQuery();
         });
 
         $list.click(function () {
-            self.location.href = "listAll?page="+ $("#page").val() +"&perPageNum="+ $("#perPageNum").val();
+            self.location.href = "listAll?"+ searchQuery();
         });
+    }
+
+    function searchQuery() {
+        return "page="+ $("#page").val() +"&perPageNum="+ $("#perPageNum").val()
+        +"&searchType="+ $("#searchType").val() +"&keyword="+ $("#keyword").val();
     }
 </script>

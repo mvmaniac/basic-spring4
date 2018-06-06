@@ -1,7 +1,7 @@
 package io.devfactory.controller;
 
-import io.devfactory.common.paging.Criteria;
 import io.devfactory.common.paging.PagingHelper;
+import io.devfactory.common.paging.SearchCriteria;
 import io.devfactory.domain.BoardVO;
 import io.devfactory.service.BoardService;
 import org.slf4j.Logger;
@@ -33,7 +33,7 @@ public class BoardController {
 
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)
-    public void registerGet() {
+    public void registerGet(@ModelAttribute("cri") SearchCriteria cri) {
         logger.debug("/board/register get....");
     }
 
@@ -59,7 +59,7 @@ public class BoardController {
     }
 
     @RequestMapping(value = "/modify", method = RequestMethod.GET)
-    public String modifyGet(@RequestParam("bno") int bno, @ModelAttribute("cri") Criteria cri, Model model) {
+    public String modifyGet(@RequestParam("bno") int bno, @ModelAttribute("cri") SearchCriteria cri, Model model) {
 
         logger.debug("/board/modify get");
         logger.debug("bno = {}", bno);
@@ -78,7 +78,7 @@ public class BoardController {
     }
 
     @RequestMapping(value = "/modify", method = RequestMethod.POST)
-    public String modifyPost(BoardVO vo, Criteria cri, RedirectAttributes rttr) {
+    public String modifyPost(BoardVO vo, SearchCriteria cri, RedirectAttributes rttr) {
 
         logger.debug("/board/modify post...");
         logger.debug("board = {}", vo);
@@ -97,13 +97,15 @@ public class BoardController {
 
         rttr.addAttribute("page", cri.getPage());
         rttr.addAttribute("perPageNum", cri.getPerPageNum());
+        rttr.addAttribute("searchType", cri.getSearchType());
+        rttr.addAttribute("keyword", cri.getKeyword());
 
         rttr.addFlashAttribute("result", msg);
         return "redirect:/board/listAll";
     }
 
     @RequestMapping(value = "/remove", method = RequestMethod.POST)
-    public String remove(@RequestParam("bno") int bno, Criteria cri, RedirectAttributes rttr) {
+    public String remove(@RequestParam("bno") int bno, SearchCriteria cri, RedirectAttributes rttr) {
 
         logger.debug("/board/remove");
         logger.debug("bno = {}", bno);
@@ -122,6 +124,8 @@ public class BoardController {
 
         rttr.addAttribute("page", cri.getPage());
         rttr.addAttribute("perPageNum", cri.getPerPageNum());
+        rttr.addAttribute("searchType", cri.getSearchType());
+        rttr.addAttribute("keyword", cri.getKeyword());
 
         rttr.addFlashAttribute("result", msg);
         rttr.addFlashAttribute("delete", "Y");
@@ -130,7 +134,7 @@ public class BoardController {
     }
 
     @RequestMapping(value = "/listAll", method = RequestMethod.GET)
-    public String listAll(Criteria cri, @ModelAttribute("delete") String delete, Model model) {
+    public String listAll(SearchCriteria cri, @ModelAttribute("delete") String delete, Model model) {
 
         logger.debug("/board/listAll...");
         logger.debug("cri = {}", cri);
@@ -139,17 +143,18 @@ public class BoardController {
         List<BoardVO> list = new ArrayList<>();
 
         try {
-            list = boardService.selectByCriteria(cri);
+            list = boardService.selectBySearch(cri);
 
-            int totalCount = boardService.totalCount(cri);
+            int totalCount = boardService.totalCountBySearch(cri);
 
+            // TODO: 개선?
             // 삭제에서 넘어왔고 리스트 목록이 없다면 한번더 검색함
             if (delete.equals("Y") && list.isEmpty()) {
 
                 cri.setPage(cri.getPage() - 1);
 
-                list = boardService.selectByCriteria(cri);
-                totalCount = boardService.totalCount(cri);
+                list = boardService.selectBySearch(cri);
+                totalCount = boardService.totalCountBySearch(cri);
             }
 
             model.addAttribute("paging", PagingHelper.getPagingInfo(totalCount, cri, 5));
@@ -163,7 +168,7 @@ public class BoardController {
     }
 
     @RequestMapping(value = "/read", method = RequestMethod.GET)
-    public String read(@RequestParam("bno") int bno, @ModelAttribute("cri") Criteria cri, Model model) {
+    public String read(@RequestParam("bno") int bno, @ModelAttribute("cri") SearchCriteria cri, Model model) {
 
         logger.debug("/board/read");
         logger.debug("bno = {}", bno);

@@ -3,10 +3,17 @@
 
 <mapper namespace="io.devfactory.persistence.BoardMapper">
 
-    <select id="totalCount" parameterType="Criteria" resultType="int">
+    <select id="totalCount" resultType="int">
       SELECT COUNT(bno)
       FROM tbl_board
       WHERE bno &gt; 0
+    </select>
+
+    <select id="totalCountBySearch" parameterType="SearchCriteria" resultType="int">
+      SELECT COUNT(bno)
+      FROM tbl_board
+      WHERE bno &gt; 0
+      <include refid="search"></include>
     </select>
 
     <insert id="insert" parameterType="BoardVO">
@@ -38,10 +45,48 @@
       LIMIT #{pageStart}, #{perPageNum}
     </select>
 
+    <select id="selectBySearch" parameterType="SearchCriteria" resultType="BoardVO">
+      SELECT bno, title, content, writer, regdate, viewcnt
+      FROM tbl_board
+      WHERE bno &gt; 0
+
+      <include refid="search"></include>
+
+      ORDER BY bno DESC, regdate DESC
+      LIMIT #{pageStart}, #{perPageNum}
+    </select>
+
     <select id="selectByBoard" parameterType="int" resultType="BoardVO">
       SELECT bno, title, content, writer, regdate, viewcnt
       FROM tbl_board
       WHERE bno = #{bno}
     </select>
+
+    <sql id="search">
+        <if test="searchType != null" >
+            <choose>
+                <when test="searchType.equalsIgnoreCase('t')">
+                  AND title LIKE CONCAT('%', #{keyword}, '%')
+                </when>
+                <when test="searchType.equalsIgnoreCase('c')">
+                  AND content LIKE CONCAT('%', #{keyword}, '%')
+                </when>
+                <when test="searchType.equalsIgnoreCase('w')">
+                  AND writer LIKE CONCAT('%', #{keyword}, '%')
+                </when>
+                <when test="searchType.equalsIgnoreCase('tc')">
+                  AND (title LIKE CONCAT('%', #{keyword}, '%') OR content LIKE CONCAT('%', #{keyword}, '%'))
+                </when>
+                <when test="searchType.equalsIgnoreCase('cw')">
+                  AND (content LIKE CONCAT('%', #{keyword}, '%') OR writer LIKE CONCAT('%', #{keyword}, '%'))
+                </when>
+                <when test="searchType.equalsIgnoreCase('tcw')">
+                  AND (title LIKE CONCAT('%', #{keyword}, '%')
+                  OR content LIKE CONCAT('%', #{keyword}, '%')
+                  OR writer LIKE CONCAT('%', #{keyword}, '%'))
+                </when>
+            </choose>
+        </if>
+    </sql>
 
 </mapper>

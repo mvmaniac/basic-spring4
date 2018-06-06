@@ -1,6 +1,7 @@
 package io.devfactory.persistence;
 
 import io.devfactory.common.paging.Criteria;
+import io.devfactory.common.paging.SearchCriteria;
 import io.devfactory.domain.BoardVO;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -9,7 +10,9 @@ import java.util.List;
 @Mapper
 public interface BoardMapper {
 
-    public int totalCount(Criteria cri);
+    public int totalCount();
+
+    public int totalCountBySearch(SearchCriteria cri);
 
     public void insert(BoardVO vo);
 
@@ -20,6 +23,8 @@ public interface BoardMapper {
     public List<BoardVO> selectAll();
 
     public List<BoardVO> selectByCriteria(Criteria cri);
+
+    public List<BoardVO> selectBySearch(SearchCriteria cri);
 
     public BoardVO selectByBoard(int bno);
 
