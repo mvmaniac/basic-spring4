@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.devfactory.persistence.ReplyMapper">
+
+    <select id="totalCount" resultType="int">
+      SELECT COUNT(rno)
+      FROM tbl_reply
+      WHERE bno = #{bno}
+    </select>
+
+    <insert id="insert" parameterType="ReplyVO">
+      INSERT INTO tbl_reply(bno, replytext, replyer)
+      VALUES(#{bno}, #{replytext}, #{replyer})
+    </insert>
+
+    <update id="update" parameterType="ReplyVO">
+      UPDATE tbl_reply SET replytext = #{replytext}, updatedate = NOW()
+      WHERE rno = #{rno}
+    </update>
+
+    <delete id="delete" parameterType="int">
+       DELETE FROM tbl_reply WHERE rno = #{rno}
+    </delete>
+
+    <select id="selectAll" parameterType="int" resultType="ReplyVO">
+      SELECT rno, bno, replytext, replyer, regdate, updatedate
+      FROM tbl_reply
+      WHERE bno = #{bno}
+      ORDER BY rno DESC, regdate DESC
+    </select>
+
+    <select id="selectByCriteria" parameterType="map" resultType="ReplyVO">
+      SELECT rno, bno, replytext, replyer, regdate, updatedate
+      FROM tbl_reply
+      WHERE bno = #{bno}
+      ORDER BY rno DESC, regdate DESC
+      LIMIT #{cri.pageStart}, #{cri.perPageNum}
+    </select>
+
+</mapper>

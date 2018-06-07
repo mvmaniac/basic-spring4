@@ -31,7 +31,6 @@ public class BoardController {
         this.boardService = boardService;
     }
 
-
     @RequestMapping(value = "/register", method = RequestMethod.GET)
     public void registerGet(@ModelAttribute("cri") SearchCriteria cri) {
         logger.debug("/board/register get....");
