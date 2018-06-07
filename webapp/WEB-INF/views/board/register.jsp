@@ -94,7 +94,7 @@
 
         $list.click(function () {
 
-            $frmList.attr("action", "listAll");
+            $frmList.attr("action", contextPath +"/board/listAll");
             $frmList.submit();
         });
     }

@@ -95,37 +95,37 @@
                         </table>
                     </div>
                     <div class="card-footer clearfix">
-                        <button type="button" class="btn btn-primary float-left" id="register" title="Register">Register</button>
+                        <button type="button" class="btn btn-primary btn-sm float-left" id="register" title="Register">Register</button>
                         <c:if test="${not empty list}">
-                            <ul class="pagination m-0 float-right">
+                            <ul class="pagination pagination-sm m-0 float-right">
                                 <c:if test="${paging.showFirst}">
-                                    <li class="page-item"><a class="page-link" href="<c:url value="listAll?${paging.makeQuery(1)}" />">처음</a></li>
+                                    <li class="page-item"><a class="page-link" href="<c:url value="/board/listAll?${paging.makeQuery(1)}" />">처음</a></li>
                                 </c:if>
 
                                 <c:if test="${paging.showPrevMore}">
-                                    <li class="page-item"><a class="page-link" href="<c:url value="listAll?${paging.makeQuery(paging.prevMorePage)}" />">&laquo;</a></li>
+                                    <li class="page-item"><a class="page-link" href="<c:url value="/board/listAll?${paging.makeQuery(paging.prevMorePage)}" />">&laquo;</a></li>
                                 </c:if>
 
                                 <c:if test="${paging.showPrev}">
-                                    <li class="page-item"><a class="page-link" href="<c:url value="listAll?${paging.makeQuery(paging.prevPage)}" />">&lt;</a></li>
+                                    <li class="page-item"><a class="page-link" href="<c:url value="/board/listAll?${paging.makeQuery(paging.prevPage)}" />">&lt;</a></li>
                                 </c:if>
 
                                 <c:forEach begin="${paging.startPage}" end="${paging.endPage}" step="1" var="idx">
                                     <li class="page-item <c:out value="${paging.selectPage == idx ? 'active': ''}" />">
-                                        <a class="page-link" href="<c:url value="listAll?${paging.makeQuery(idx)}" />">${idx}</a>
+                                        <a class="page-link" href="<c:url value="/board//listAll?${paging.makeQuery(idx)}" />">${idx}</a>
                                     </li>
                                 </c:forEach>
 
                                 <c:if test="${paging.showNext}">
-                                    <li class="page-item"><a class="page-link" href="<c:url value="listAll?${paging.makeQuery(paging.nextPage)}" />">&gt;</a></li>
+                                    <li class="page-item"><a class="page-link" href="<c:url value="/board/listAll?${paging.makeQuery(paging.nextPage)}" />">&gt;</a></li>
                                 </c:if>
 
                                 <c:if test="${paging.showNextMore}">
-                                    <li class="page-item"><a class="page-link" href="<c:url value="listAll?${paging.makeQuery(paging.nextMorePage)}" />">&raquo;</a></li>
+                                    <li class="page-item"><a class="page-link" href="<c:url value="/board/listAll?${paging.makeQuery(paging.nextMorePage)}" />">&raquo;</a></li>
                                 </c:if>
 
                                 <c:if test="${paging.showLast}">
-                                    <li class="page-item"><a class="page-link" href="<c:url value="listAll?${paging.makeQuery(paging.totalPageCount)}" />">마지막</a></li>
+                                    <li class="page-item"><a class="page-link" href="<c:url value="/board/listAll?${paging.makeQuery(paging.totalPageCount)}" />">마지막</a></li>
                                 </c:if>
                             </ul>
                         </c:if>
@@ -169,7 +169,7 @@
             $search = $("#search");
 
         $register.click(function () {
-           self.location.href = "register?"+ searchQuery();
+           self.location.href = contextPath +"/board/register?"+ searchQuery();
         });
 
         $keyword.keydown(function (evt) {
@@ -184,7 +184,7 @@
     }
 
     function search() {
-        self.location.href = "listAll?"+ searchQuery();
+        self.location.href = contextPath +"/board/listAll?"+ searchQuery();
     }
 
     function searchQuery() {

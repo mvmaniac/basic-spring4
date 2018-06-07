@@ -95,11 +95,11 @@
         });
 
         $cancel.click(function () {
-            self.location.href = "read?bno="+ $("#bno").val() +"&"+ searchQuery();
+            self.location.href = contextPath +"/board/read?bno="+ $("#bno").val() +"&"+ searchQuery();
         });
 
         $list.click(function () {
-            self.location.href = "listAll?"+ searchQuery();
+            self.location.href = contextPath +"/board/listAll?"+ searchQuery();
         });
     }
 

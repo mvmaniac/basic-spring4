@@ -1,4 +1,5 @@
-<%@ page contentType="text/html;charset=UTF-8"%>
+<%--suppress ES6ConvertVarToLetConst --%>
+<%@ page contentType="text/html;charset=utf-8" pageEncoding="utf-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core_1_1" %>
 <%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles" %>
 <%@ taglib prefix="tilesx" uri="http://tiles.apache.org/tags-tiles-extras" %>
@@ -53,5 +54,11 @@
     <c:forEach var="src" items="${js}">
         <script src="<c:url value="${src}" />"></script>
     </c:forEach>
+
+    <script type="text/javascript">
+        var contextPath = "${pageContext.request.contextPath}";
+    </script>
+
+    <tiles:insertAttribute name="handlebars" />
 </body>
 </html>
