@@ -127,18 +127,19 @@
 
 <script type="text/javascript">
 
-    // TODO: 유효성체크, 핸들바 페이지별 적용, 핸들바 커스텀 함수 분리, windows.onload??, 전역변수 명칭 선언
+    // TODO: 유효성체크, 댓글 목록 없을 시 처리, 게시글 삭제 시 댓글 삭제 처리
 
     var $repliesDiv, bno, replyPage, replyListTemplate, paginationTemplate;
 
     window.onload = function() {
 
-        initPage();
-        initEvent();
+        initVars();
+        initEventPage();
+        initEventModal();
         initHandleBars();
     };
 
-    function initPage() {
+    function initVars() {
 
         bno = $("input[name=bno]").val();
         replyPage = 1;
@@ -146,14 +147,11 @@
         $repliesDiv = $("#repliesDiv");
     }
 
-    function initEvent() {
+    function initEventPage() {
 
-        var $form = $("#frmRead"),
-            $modify = $("#modify"),
-            $remove = $("#remove"),
-            $list = $("#list");
+        var $form = $("#frmRead");
 
-        $modify.click(function (evt) {
+        $("#modify").click(function (evt) {
 
             evt.preventDefault();
 
@@ -162,7 +160,7 @@
             $form.submit();
         });
 
-        $remove.click(function (evt) {
+        $("#remove").click(function (evt) {
 
             evt.preventDefault();
 
@@ -172,12 +170,13 @@
             $form.submit();
         });
 
-        $list.click(function () {
+        $("#list").click(function () {
 
             $form.attr("action", "listAll");
             $form.submit();
         });
 
+        // TODO: 버튼이 아닌 페이지 로딩 처리로 변경
         $repliesDiv.click(function() {
             getPage("/replies/" + bno + "/1");
         });
@@ -189,7 +188,7 @@
 
             $.ajax({
                 type: "post",
-                url: contextPath +"/replies/",
+                url: gContextPath +"/replies/",
                 headers: {
                     "X-HTTP-Method-Override": "POST"
                 },
@@ -213,6 +212,19 @@
             });
         });
 
+        $("ul.pagination").on("click", "li a", function(event){
+
+            event.preventDefault();
+
+            replyPage = $(this).data("page");
+
+            getPage("/replies/"+ bno +"/"+ replyPage);
+        });
+    }
+
+    function initEventModal() {
+
+        // 수정 modal 처리
         $("#modifyModal").on("show.bs.modal", function (evt) {
 
             var $this = $(this),
@@ -224,6 +236,7 @@
             $this.find("input[type=text]").val(text);
         });
 
+        // 수정 처리
         $("#replyModBtn").click(function(evt) {
 
             var $modal = $(evt.target.offsetParent),
@@ -232,7 +245,7 @@
 
             $.ajax({
                 type: "put",
-                url: contextPath +"/replies/"+ rno,
+                url: gContextPath +"/replies/"+ rno,
                 headers: {
                     "X-HTTP-Method-Override": "PUT"
                 },
@@ -252,6 +265,7 @@
             });
         });
 
+        // 삭제 처리
         $("#replyDelBtn").click(function(evt) {
 
             var $modal = $(evt.target.offsetParent),
@@ -260,7 +274,7 @@
 
             $.ajax({
                 type: "delete",
-                url: contextPath +"/replies/"+ rno,
+                url: gContextPath +"/replies/"+ rno,
                 headers: {
                     "X-HTTP-Method-Override": "DELETE"
                 },
@@ -278,22 +292,11 @@
                 }
             });
         });
-
-        $("ul.pagination").on("click", "li a", function(event){
-
-            event.preventDefault();
-
-            replyPage = $(this).data("page");
-
-            getPage("/replies/"+ bno +"/"+ replyPage);
-        });
     }
 
     function initHandleBars() {
 
-        replyListTemplate = Handlebars.compile($("#replyList-template").html());
-        paginationTemplate = Handlebars.compile($("#pagination-template").html());
-
+        // 커스텀 함수 등록
         Handlebars.registerHelper("prettifyDate", function(timeValue) {
 
             var dateObj = new Date(timeValue),
@@ -324,11 +327,15 @@
         Handlebars.registerHelper("equals", function(v1, v2, yes, no) {
             return (v1 === v2) ? yes : no;
         });
+
+        // 템플릿 컴파일
+        replyListTemplate = Handlebars.compile($("#replyList-template").html());
+        paginationTemplate = Handlebars.compile($("#pagination-template").html());
     }
 
     function getPage(url) {
 
-        $.getJSON(contextPath + url, function(data) {
+        $.getJSON(gContextPath + url, function(data) {
 
             var list = data.list,
                 paging = data.paging;
@@ -350,13 +357,64 @@
         $("#repliesDiv").after(html);
     }
 
-    var printPaging = function(paging) {
+    function printPaging(paging) {
 
         var html = paginationTemplate(paging);
         $("ul.pagination").html(html);
-    };
+    }
 
     function zeroFill(number) {
         return ("0"+ number).slice(-2);
     }
+</script>
+
+<!-- handlebars template -->
+<script id="replyList-template" type="text/x-handlebars-template">
+    {{#each .}}
+        <li class="replyLi" data-rno={{rno}}>
+            <i class="fa fa-comments bg-blue"></i>
+            <div class="timeline-item">
+            <span class="time">
+            <i class="far fa-clock"></i>&nbsp;{{prettifyDate regdate}}
+            </span>
+                <h3 class="timeline-header"><strong>{{rno}}</strong>&nbsp;-&nbsp;{{replyer}}</h3>
+                <div class="timeline-body">{{replytext}}</div>
+                <div class="timeline-footer">
+                    <a class="btn btn-default btn-sm" data-toggle="modal" data-target="#modifyModal">Modify</a>
+                </div>
+            </div>
+        </li>
+    {{/each}}
+</script>
+
+<script id="pagination-template" type="text/x-handlebars-template">
+    {{#if showFirst}}
+        <li class="page-item"><a class="page-link" href="#" data-page="1">처음</a></li>
+    {{/if}}
+
+    {{#if showPrevMore}}
+        <li class="page-item"><a class="page-link" href="#" data-page="{{prevMorePage}}">&laquo;</a></li>
+    {{/if}}
+
+    {{#if showPrev}}
+        <li class="page-item"><a class="page-link" href="#" data-page="{{prevPage}}">&lt;</a></li>
+    {{/if}}
+
+    {{#forPaging startPage endPage 1 selectPage}}
+        <li class="page-item {{#equals this.index this.select 'active' ''}}{{/equals}}">
+            <a class="page-link" href="#" data-page="{{this.index}}">{{this.index}}</a>
+        </li>
+    {{/forPaging}}
+
+    {{#if showNext}}
+        <li class="page-item"><a class="page-link" href="#" data-page="{{nextPage}}">&gt;</a></li>
+    {{/if}}
+
+    {{#if showNextMore}}
+        <li class="page-item"><a class="page-link" href="#" data-page="{{nextMorePage}}">&raquo;</a></li>
+    {{/if}}
+
+    {{#if showLast}}
+        <li class="page-item"><a class="page-link" href="#" data-page="{{totalPageCount}}">마지막</a></li>
+    {{/if}}
 </script>

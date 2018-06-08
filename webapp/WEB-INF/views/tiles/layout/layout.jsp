@@ -56,9 +56,7 @@
     </c:forEach>
 
     <script type="text/javascript">
-        var contextPath = "${pageContext.request.contextPath}";
+        var gContextPath = "${pageContext.request.contextPath}";
     </script>
-
-    <tiles:insertAttribute name="handlebars" />
 </body>
 </html>

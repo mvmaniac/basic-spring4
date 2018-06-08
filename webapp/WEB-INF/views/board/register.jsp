@@ -71,13 +71,13 @@
 
     window.onload = function() {
 
-        initPage();
-        initEvent();
+        initVars();
+        initEventPage();
     };
 
-    function initPage() {}
+    function initVars() {}
 
-    function initEvent() {
+    function initEventPage() {
 
         var $frmRegister = $("#frmRegister"),
             $frmList = $("#frmList"),
@@ -94,7 +94,7 @@
 
         $list.click(function () {
 
-            $frmList.attr("action", contextPath +"/board/listAll");
+            $frmList.attr("action", gContextPath +"/board/listAll");
             $frmList.submit();
         });
     }

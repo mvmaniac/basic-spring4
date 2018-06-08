@@ -70,13 +70,13 @@
 
     window.onload = function() {
 
-        initPage();
-        initEvent();
+        initVars();
+        initEventPage();
     };
 
-    function initPage() {}
+    function initVars() {}
 
-    function initEvent() {
+    function initEventPage() {
 
         var $form = $("#frmModify"),
             $save = $("#save"),
@@ -95,11 +95,11 @@
         });
 
         $cancel.click(function () {
-            self.location.href = contextPath +"/board/read?bno="+ $("#bno").val() +"&"+ searchQuery();
+            self.location.href = gContextPath +"/board/read?bno="+ $("#bno").val() +"&"+ searchQuery();
         });
 
         $list.click(function () {
-            self.location.href = contextPath +"/board/listAll?"+ searchQuery();
+            self.location.href = gContextPath +"/board/listAll?"+ searchQuery();
         });
     }
 

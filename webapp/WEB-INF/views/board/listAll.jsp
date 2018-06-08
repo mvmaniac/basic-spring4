@@ -145,11 +145,11 @@
 
     window.onload = function() {
 
-        initPage();
-        initEvent();
+        initVars();
+        initEventPage();
     };
     
-    function initPage() {
+    function initVars() {
 
         var $result = $("#result"),
             value = $result.val();
@@ -162,14 +162,14 @@
         $result.val("");
     }
 
-    function initEvent() {
+    function initEventPage() {
 
         var $register = $("#register"),
             $keyword = $("#keyword"),
             $search = $("#search");
 
         $register.click(function () {
-           self.location.href = contextPath +"/board/register?"+ searchQuery();
+           self.location.href = gContextPath +"/board/register?"+ searchQuery();
         });
 
         $keyword.keydown(function (evt) {
@@ -184,7 +184,7 @@
     }
 
     function search() {
-        self.location.href = contextPath +"/board/listAll?"+ searchQuery();
+        self.location.href = gContextPath +"/board/listAll?"+ searchQuery();
     }
 
     function searchQuery() {
