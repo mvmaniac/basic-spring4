@@ -104,9 +104,32 @@
     <input type="hidden" name="keyword" value="${cri.keyword}" />
 </form>
 
+<!-- Modal -->
+<div id="modifyModal" class="modal modal-primary fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>
+                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <p><input type="text" class="form-control"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info btn-sm" id="replyModBtn">Modify</button>
+                <button type="button" class="btn btn-danger btn-sm" id="replyDelBtn">Delete</button>
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script type="text/javascript">
 
-    var $repliesDiv, bno, replyListTemplate, paginationTemplate;
+    // TODO: 유효성체크, 핸들바 페이지별 적용, 핸들바 커스텀 함수 분리, windows.onload??, 전역변수 명칭 선언
+
+    var $repliesDiv, bno, replyPage, replyListTemplate, paginationTemplate;
 
     window.onload = function() {
 
@@ -116,7 +139,10 @@
     };
 
     function initPage() {
+
         bno = $("input[name=bno]").val();
+        replyPage = 1;
+
         $repliesDiv = $("#repliesDiv");
     }
 
@@ -127,7 +153,6 @@
             $remove = $("#remove"),
             $list = $("#list");
 
-        // TODO: 유효성 체크
         $modify.click(function (evt) {
 
             evt.preventDefault();
@@ -163,7 +188,7 @@
                 replytext = $("#replytext").val();
 
             $.ajax({
-                type:"post",
+                type: "post",
                 url: contextPath +"/replies/",
                 headers: {
                     "X-HTTP-Method-Override": "POST"
@@ -188,11 +213,78 @@
             });
         });
 
+        $("#modifyModal").on("show.bs.modal", function (evt) {
+
+            var $this = $(this),
+                $target = $(evt.relatedTarget),
+                rno = $target.closest("li").data("rno"),
+                text = $target.parent().siblings("div.timeline-body").text();
+
+            $this.find("h5.modal-title").html(rno);
+            $this.find("input[type=text]").val(text);
+        });
+
+        $("#replyModBtn").click(function(evt) {
+
+            var $modal = $(evt.target.offsetParent),
+                rno = $modal.find("h5.modal-title").html(),
+                text = $modal.find("input[type=text]").val();
+
+            $.ajax({
+                type: "put",
+                url: contextPath +"/replies/"+ rno,
+                headers: {
+                    "X-HTTP-Method-Override": "PUT"
+                },
+                contentType: "application/json",
+                dataType: "text",
+                data: JSON.stringify({ replytext:text }),
+                success: function (result) {
+
+                    console.log("result: " + result);
+
+                    if (result === "success") {
+
+                        alert("수정 되었습니다.");
+                        getPage("/replies/"+ bno +"/"+ replyPage);
+                    }
+                }
+            });
+        });
+
+        $("#replyDelBtn").click(function(evt) {
+
+            var $modal = $(evt.target.offsetParent),
+                rno = $modal.find("h5.modal-title").html(),
+                text = $modal.find("input[type=text]").val();
+
+            $.ajax({
+                type: "delete",
+                url: contextPath +"/replies/"+ rno,
+                headers: {
+                    "X-HTTP-Method-Override": "DELETE"
+                },
+                contentType: "application/json",
+                dataType: "text",
+                success: function (result) {
+
+                    console.log("result: " + result);
+
+                    if (result === "success") {
+
+                        alert("수정 되었습니다.");
+                        getPage("/replies/"+ bno +"/"+ replyPage);
+                    }
+                }
+            });
+        });
+
         $("ul.pagination").on("click", "li a", function(event){
 
             event.preventDefault();
 
-            var replyPage = $(this).data("page");
+            replyPage = $(this).data("page");
+
             getPage("/replies/"+ bno +"/"+ replyPage);
         });
     }
@@ -245,7 +337,8 @@
                 printData(list);
                 printPaging(paging);
             }
-            //$("#modifyModal").modal("hide");
+
+            $("#modifyModal").modal("hide");
         });
     }
 
