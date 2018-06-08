@@ -68,6 +68,11 @@ public class BoardController {
 
         try {
             vo = boardService.selectByBoard(bno);
+
+            // vo가 null 인 경우는 redirect 시킴
+            if (vo == null) {
+                return "redirect:/board/listAll";
+            }
         } catch (Exception e) {
             logger.error("/board/modify error => ", e);
         }
@@ -152,8 +157,6 @@ public class BoardController {
 
                 list = boardService.selectBySearch(cri);
                 totalCount = boardService.totalCountBySearch(cri);
-
-                logger.debug("research!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             }
 
             model.addAttribute("paging", PagingHelper.getPagingInfo(totalCount, cri, 5));
@@ -177,6 +180,11 @@ public class BoardController {
 
         try {
             vo = boardService.selectByBoard(bno);
+
+            // vo가 null 인 경우는 redirect 시킴
+            if (vo == null) {
+                return "redirect:/board/listAll";
+            }
         } catch (Exception e) {
             logger.error("/board/read error => ", e);
         }

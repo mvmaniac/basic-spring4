@@ -122,8 +122,6 @@ public class ReplyController {
 
 				list = replyService.selectByCriteria(bno, criteria);
 				totalCount = replyService.totalCount(bno);
-
-				logger.debug("research!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 			}
 
 			result.put("list", list);
