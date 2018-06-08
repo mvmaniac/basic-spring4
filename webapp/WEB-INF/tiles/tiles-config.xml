@@ -7,7 +7,6 @@
         <put-attribute name="header" value="/WEB-INF/views/tiles/template/header.jsp" />
         <put-attribute name="sidebar" value="/WEB-INF/views/tiles/template/sidebar.jsp" />
         <put-attribute name="footer" value="/WEB-INF/views/tiles/template/footer.jsp" />
-        <put-attribute name="handlebars" value="/WEB-INF/views/tiles/include/handlebars.jsp" />
         <put-list-attribute name="stylesheet">
             <add-attribute value="/css/fontawesome/5.0.13/fa-svg-with-js.css" />
             <add-attribute value="/css/bootstrap/4.1.1/bootstrap.css" />
