@@ -112,9 +112,21 @@ public class ReplyController {
 			criteria.setPerPageNum(2);
 
 			List<ReplyVO> list = replyService.selectByCriteria(bno, criteria);
-			result.put("list", list);
 
 			int totalCount = replyService.totalCount(bno);
+
+			// 요청 페이지가 1이 아니고 전체 목록 수가 0이 아니면서 리스트 목록이 없다면 한번더 검색함
+			if (page != 1 && totalCount != 0 && list.isEmpty()) {
+
+				criteria.setPage(page - 1);
+
+				list = replyService.selectByCriteria(bno, criteria);
+				totalCount = replyService.totalCount(bno);
+
+				logger.debug("research!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+			}
+
+			result.put("list", list);
 			result.put("paging", PagingHelper.getPagingInfo(totalCount, criteria, 2));
 
 			entity = new ResponseEntity<>(result, HttpStatus.OK);

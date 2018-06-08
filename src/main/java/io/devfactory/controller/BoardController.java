@@ -127,17 +127,15 @@ public class BoardController {
         rttr.addAttribute("keyword", cri.getKeyword());
 
         rttr.addFlashAttribute("result", msg);
-        rttr.addFlashAttribute("delete", "Y");
 
         return "redirect:/board/listAll";
     }
 
     @RequestMapping(value = "/listAll", method = RequestMethod.GET)
-    public String listAll(SearchCriteria cri, @ModelAttribute("delete") String delete, Model model) {
+    public String listAll(SearchCriteria cri, Model model) {
 
         logger.debug("/board/listAll...");
         logger.debug("cri = {}", cri);
-        logger.debug("delete = {}", delete);
 
         List<BoardVO> list = new ArrayList<>();
 
@@ -145,15 +143,17 @@ public class BoardController {
             list = boardService.selectBySearch(cri);
 
             int totalCount = boardService.totalCountBySearch(cri);
+            int page = cri.getPage();
 
-            // TODO: 개선?
-            // 삭제에서 넘어왔고 리스트 목록이 없다면 한번더 검색함
-            if (delete.equals("Y") && list.isEmpty()) {
+            // 요청 페이지가 1이 아니고 전체 목록 수가 0이 아니면서 리스트 목록이 없다면 한번더 검색함
+            if (page != 1 && totalCount != 0 && list.isEmpty()) {
 
-                cri.setPage(cri.getPage() - 1);
+                cri.setPage(page - 1);
 
                 list = boardService.selectBySearch(cri);
                 totalCount = boardService.totalCountBySearch(cri);
+
+                logger.debug("research!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             }
 
             model.addAttribute("paging", PagingHelper.getPagingInfo(totalCount, cri, 5));
