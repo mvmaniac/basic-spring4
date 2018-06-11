@@ -16,6 +16,8 @@ public interface BoardService {
 
     public void update(BoardVO vo) throws Exception;
 
+    public void updateReplyCnt(int bno, int amount) throws Exception;
+
     public void delete(int bno) throws Exception;
 
     public List<BoardVO> selectAll() throws Exception;

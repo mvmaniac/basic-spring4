@@ -58,7 +58,7 @@
                 <!-- reply list -->
                 <ul class="timeline">
                     <!-- timeline time label -->
-                    <li class="time-label" id="repliesDiv"><span class="bg-info">Replies List</span></li>
+                    <li class="time-label" id="repliesDiv"><span class="bg-info">Replies List <small class="replycnt">[${boardVO.replycnt}]</small></span></li>
                 </ul>
 
                 <div class="d-flex justify-content-center">
@@ -127,7 +127,7 @@
 
 <script type="text/javascript">
 
-    // TODO: 유효성체크, 댓글 목록 없을 시 처리, 게시글 삭제 시 댓글 삭제 처리
+    // TODO: 유효성체크, 댓글 목록 없을 시 처리, 게시글 삭제 시 댓글 삭제 처리, 뒤로가기 시 카운트 갱신 문제
 
     var $repliesDiv, bno, replyPage, replyListTemplate, paginationTemplate;
 
@@ -328,6 +328,14 @@
             return (v1 === v2) ? yes : no;
         });
 
+        Handlebars.registerHelper("rownum", function(paging, idx) {
+
+            var criteria = paging.criteria,
+                rownum = paging.totalRowCount - ((criteria.page - 1) * criteria.perPageNum);
+
+            return rownum - idx;
+        });
+
         // 템플릿 컴파일
         replyListTemplate = Handlebars.compile($("#replyList-template").html());
         paginationTemplate = Handlebars.compile($("#pagination-template").html());
@@ -341,17 +349,22 @@
                 paging = data.paging;
 
             if (list) {
-                printData(list);
+                printData(list, paging);
                 printPaging(paging);
             }
 
             $("#modifyModal").modal("hide");
+
+            $("small.replycnt").html("["+ paging.totalRowCount +"]");
         });
     }
 
-    function printData(replyList) {
+    function printData(replyList, paging) {
 
-        var html = replyListTemplate(replyList);
+        var html = replyListTemplate({
+            list: replyList,
+            paging: paging
+        });
 
         $("ul.timeline > li.replyLi").remove();
         $("#repliesDiv").after(html);
@@ -370,14 +383,14 @@
 
 <!-- handlebars template -->
 <script id="replyList-template" type="text/x-handlebars-template">
-    {{#each .}}
+    {{#each list}}
         <li class="replyLi" data-rno={{rno}}>
             <i class="fa fa-comments bg-blue"></i>
             <div class="timeline-item">
             <span class="time">
             <i class="far fa-clock"></i>&nbsp;{{prettifyDate regdate}}
             </span>
-                <h3 class="timeline-header"><strong>{{rno}}</strong>&nbsp;-&nbsp;{{replyer}}</h3>
+                <h3 class="timeline-header"><strong>{{rownum ../paging @index}}</strong>&nbsp;-&nbsp;{{replyer}}</h3>
                 <div class="timeline-body">{{replytext}}</div>
                 <div class="timeline-footer">
                     <a class="btn btn-default btn-sm" data-toggle="modal" data-target="#modifyModal">Modify</a>

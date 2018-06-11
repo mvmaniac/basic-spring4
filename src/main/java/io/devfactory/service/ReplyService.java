@@ -11,6 +11,8 @@ public interface ReplyService {
 
     public int totalCount(int bno) throws Exception;
 
+    public int getBno(int rno) throws Exception;
+
     public void insert(ReplyVO vo) throws Exception;
 
     public void update(ReplyVO vo) throws Exception;

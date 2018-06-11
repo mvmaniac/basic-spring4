@@ -13,6 +13,8 @@ public interface ReplyMapper {
 
     public int totalCount(int bno);
 
+    public int getBno(int rno);
+
     public void insert(ReplyVO vo);
 
     public void update(ReplyVO vo);

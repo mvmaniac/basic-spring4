@@ -83,7 +83,7 @@
                                     <c:forEach var="board" items="${list}">
                                         <tr>
                                             <td>${rowNum}</td>
-                                            <td><a href="<c:url value="/board/read?bno=${board.bno}&${paging.makeQuery(paging.selectPage)}" />">${board.title}</a></td>
+                                            <td><a href="<c:url value="/board/read?bno=${board.bno}&${paging.makeQuery(paging.selectPage)}" />">${board.title} <strong>[${board.replycnt}]</strong></a></td>
                                             <td>${board.writer}</td>
                                             <td><fmt:formatDate pattern="yyyy-MM-dd HH:mm" value="${board.regdate}" /></td>
                                             <td><span class="badge bg-red">${board.viewcnt}</span></td>

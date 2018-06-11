@@ -9,6 +9,12 @@
       WHERE bno = #{bno}
     </select>
 
+    <select id="getBno" parameterType="int" resultType="int">
+      SELECT bno
+      FROM tbl_reply
+      WHERE rno = #{rno}
+    </select>
+
     <insert id="insert" parameterType="ReplyVO">
       INSERT INTO tbl_reply(bno, replytext, replyer)
       VALUES(#{bno}, #{replytext}, #{replyer})

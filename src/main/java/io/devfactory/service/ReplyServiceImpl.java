@@ -2,8 +2,10 @@ package io.devfactory.service;
 
 import io.devfactory.common.paging.Criteria;
 import io.devfactory.domain.ReplyVO;
+import io.devfactory.persistence.BoardMapper;
 import io.devfactory.persistence.ReplyMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -13,10 +15,13 @@ import java.util.List;
 public class ReplyServiceImpl implements ReplyService {
 
     private final ReplyMapper replyMapper;
+    private final BoardMapper boardMapper;
 
     @Inject
-    public ReplyServiceImpl(ReplyMapper replyMapper) {
+    public ReplyServiceImpl(ReplyMapper replyMapper, BoardMapper boardMapper) {
+
         this.replyMapper = replyMapper;
+        this.boardMapper = boardMapper;
     }
 
     @Override
@@ -25,8 +30,15 @@ public class ReplyServiceImpl implements ReplyService {
     }
 
     @Override
+    public int getBno(int rno) throws Exception {
+        return replyMapper.getBno(rno);
+    }
+
+    @Transactional
+    @Override
     public void insert(ReplyVO vo) throws Exception {
         replyMapper.insert(vo);
+        boardMapper.updateReplyCnt(vo.getBno(), 1);
     }
 
     @Override
@@ -34,9 +46,14 @@ public class ReplyServiceImpl implements ReplyService {
         replyMapper.update(vo);
     }
 
+    @Transactional
     @Override
     public void delete(int rno) throws Exception {
+
+        int bno = replyMapper.getBno(rno);
+
         replyMapper.delete(rno);
+        boardMapper.updateReplyCnt(bno, -1);
     }
 
     @Override

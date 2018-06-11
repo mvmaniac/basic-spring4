@@ -4,6 +4,7 @@ import io.devfactory.common.paging.Criteria;
 import io.devfactory.common.paging.SearchCriteria;
 import io.devfactory.domain.BoardVO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -17,6 +18,10 @@ public interface BoardMapper {
     public void insert(BoardVO vo);
 
     public void update(BoardVO vo);
+
+    public void updateReplyCnt(@Param("bno") int bno, @Param("amount") int amount);
+
+    public void updateViewCnt(int bno);
 
     public void delete(int bno);
 

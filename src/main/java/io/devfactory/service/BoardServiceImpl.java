@@ -5,6 +5,8 @@ import io.devfactory.common.paging.SearchCriteria;
 import io.devfactory.domain.BoardVO;
 import io.devfactory.persistence.BoardMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -41,6 +43,11 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
+    public void updateReplyCnt(int bno, int amount) throws Exception {
+        boardMapper.updateReplyCnt(bno, amount);
+    }
+
+    @Override
     public void delete(int bno) throws Exception {
         boardMapper.delete(bno);
     }
@@ -60,8 +67,10 @@ public class BoardServiceImpl implements BoardService {
         return boardMapper.selectBySearch(cri);
     }
 
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     @Override
     public BoardVO selectByBoard(int bno) throws Exception {
+        boardMapper.updateViewCnt(bno);
         return boardMapper.selectByBoard(bno);
     }
 }

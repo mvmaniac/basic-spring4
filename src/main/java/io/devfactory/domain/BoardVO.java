@@ -9,12 +9,13 @@ import java.util.Date;
 @Setter
 public class BoardVO {
 
-    private Integer bno;
+    private int bno;
     private String title;
     private String content;
     private String writer;
     private Date regdate;
     private int viewcnt;
+    private int replycnt;
 
     @Override
     public String toString() {
@@ -25,6 +26,7 @@ public class BoardVO {
                 ", writer='" + writer + '\'' +
                 ", regdate=" + regdate +
                 ", viewcnt=" + viewcnt +
+                ", replycnt=" + replycnt +
                 '}';
     }
 }
