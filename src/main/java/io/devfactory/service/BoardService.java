@@ -27,4 +27,7 @@ public interface BoardService {
     public List<BoardVO> selectBySearch(SearchCriteria cri) throws Exception;
 
     public BoardVO selectByBoard(int bno) throws Exception;
+
+    public List<String> selectByAttach(int bno) throws Exception;
 }
+

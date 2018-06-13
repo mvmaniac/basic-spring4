@@ -17,6 +17,10 @@ public interface BoardMapper {
 
     public void insert(BoardVO vo);
 
+    public void insertAttach(String fullName);
+
+    public void insertAttach(String fullName, int bno);
+
     public void update(BoardVO vo);
 
     public void updateReplyCnt(@Param("bno") int bno, @Param("amount") int amount);
@@ -24,6 +28,8 @@ public interface BoardMapper {
     public void updateViewCnt(int bno);
 
     public void delete(int bno);
+
+    public void deleteAttach(int bno);
 
     public List<BoardVO> selectAll();
 
@@ -33,4 +39,5 @@ public interface BoardMapper {
 
     public BoardVO selectByBoard(int bno);
 
+    public List<String> selectByAttach(int bno);
 }

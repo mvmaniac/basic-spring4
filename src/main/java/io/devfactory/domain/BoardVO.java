@@ -3,6 +3,7 @@ package io.devfactory.domain;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Arrays;
 import java.util.Date;
 
 @Getter
@@ -16,6 +17,7 @@ public class BoardVO {
     private Date regdate;
     private int viewcnt;
     private int replycnt;
+    private String[] files;
 
     @Override
     public String toString() {
@@ -27,6 +29,7 @@ public class BoardVO {
                 ", regdate=" + regdate +
                 ", viewcnt=" + viewcnt +
                 ", replycnt=" + replycnt +
+                ", files=" + Arrays.toString(files) +
                 '}';
     }
 }

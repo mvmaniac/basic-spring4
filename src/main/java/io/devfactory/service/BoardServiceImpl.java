@@ -32,14 +32,34 @@ public class BoardServiceImpl implements BoardService {
         return boardMapper.totalCountBySearch(cri);
     }
 
+    @Transactional
     @Override
     public void insert(BoardVO vo) throws Exception {
         boardMapper.insert(vo);
+
+        String[] files = vo.getFiles();
+        if (files == null) { return; }
+
+        for (String fileName : files) {
+            boardMapper.insertAttach(fileName);
+        }
     }
 
+    @Transactional
     @Override
     public void update(BoardVO vo) throws Exception {
+
         boardMapper.update(vo);
+
+        int bno = vo.getBno();
+        boardMapper.deleteAttach(bno);
+
+        String[] files = vo.getFiles();
+        if (files == null) { return; }
+
+        for (String fileName : files) {
+            boardMapper.insertAttach(fileName, bno);
+        }
     }
 
     @Override
@@ -47,8 +67,10 @@ public class BoardServiceImpl implements BoardService {
         boardMapper.updateReplyCnt(bno, amount);
     }
 
+    @Transactional
     @Override
     public void delete(int bno) throws Exception {
+        boardMapper.deleteAttach(bno);
         boardMapper.delete(bno);
     }
 
@@ -72,6 +94,11 @@ public class BoardServiceImpl implements BoardService {
     public BoardVO selectByBoard(int bno) throws Exception {
         boardMapper.updateViewCnt(bno);
         return boardMapper.selectByBoard(bno);
+    }
+
+    @Override
+    public List<String> selectByAttach(int bno) throws Exception {
+        return boardMapper.selectByAttach(bno);
     }
 }
 

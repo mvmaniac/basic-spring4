@@ -2,6 +2,18 @@
 <%@ page contentType="text/html;charset=utf-8" pageEncoding="utf-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+<style type="text/css">
+    .popup { position: absolute; }
+    .back { background-color: gray; opacity:0.5; width: 100%; height: 300%; overflow: hidden; z-index:1101; }
+    .front { z-index: 1110; opacity: 1; border: 1px; margin: auto; }
+    .show{
+        position:relative;
+        max-width: 1200px;
+        max-height: 800px;
+        overflow: auto;
+    }
+</style>
+
 <!-- content header (page header) -->
 <section class="content-header">
     <div class="container-fluid">
@@ -81,6 +93,10 @@
                             <label for="replytext">Reply Text</label>
                             <input type="text" class="form-control" id="replytext" name="replytext" placeholder="Reply Text" />
                         </div>
+                        <div class="card-footer bg-white">
+                            <ul class="mailbox-attachments clearfix attachList">
+                            </ul>
+                        </div>
                     </div>
                     <div class="card-footer">
                         <button type="button" class="btn btn-warning btn-sm" id="reply">Add Reply</button>
@@ -125,11 +141,16 @@
     </div>
 </div>
 
+<div class="popup back" style="display:none"></div>
+<div id="popupFront" class="popup front" style="display:none">
+    <img id="popupImg" src="" />
+</div>
+
 <script type="text/javascript">
 
-    // TODO: 유효성체크, 댓글 목록 없을 시 처리, 게시글 삭제 시 댓글 삭제 처리, 뒤로가기 시 카운트 갱신 문제
+    // TODO: 유효성체크, 댓글 목록 없을 시 처리, 게시글 삭제 시 댓글 삭제 처리, 뒤로가기 시 카운트 갱신 문제, 첨부파일 제대로 처리
 
-    var $repliesDiv, bno, replyPage, replyListTemplate, paginationTemplate;
+    var $repliesDiv, bno, replyPage, replyListTemplate, paginationTemplate, fileListTemplate;
 
     window.onload = function() {
 
@@ -137,6 +158,17 @@
         initEventPage();
         initEventModal();
         initHandleBars();
+
+        $.getJSON(gContextPath +"/board/getAttach/"+ bno, function(list) {
+
+            $(list).each(function(){
+
+                var fileInfo = getFileInfo(this);
+                var html = fileListTemplate(fileInfo);
+
+                $("ul.attachList").append(html);
+            });
+        });
     };
 
     function initVars() {
@@ -163,6 +195,25 @@
         $("#remove").click(function (evt) {
 
             evt.preventDefault();
+
+            var replyCnt = Number($("small.replycnt").html().replace(/[\[\]]/g, ""));
+
+            if(replyCnt > 0 ){
+                alert("댓글이 달린 게시물을 삭제할 수 없습니다.");
+                return;
+            }
+
+            var arr = [];
+
+            $("ul.uploadedList li").each(function() {
+                arr.push($(this).attr("data-src"));
+            });
+
+            if(arr.length > 0){
+                $.post("/deleteAllFiles",{files: arr}, function(){
+
+                });
+            }
 
             $form.attr("action", "remove");
             $form.attr("method", "post");
@@ -212,13 +263,35 @@
             });
         });
 
-        $("ul.pagination").on("click", "li a", function(event){
+        $("ul.pagination").on("click", "li a", function(event) {
 
             event.preventDefault();
 
             replyPage = $(this).data("page");
 
             getPage("/replies/"+ bno +"/"+ replyPage);
+        });
+
+        $("ul.attachList").on("click", "div.mailbox-attachment-info a", function(event) {
+
+            var fileLink = $(this).attr("href");
+
+            if (checkImageType(fileLink)){
+
+                event.preventDefault();
+
+                var imgTag = $("#popupImg");
+                imgTag.attr("src", fileLink);
+
+                console.log(imgTag.attr("src"));
+
+                $("div.popup").show("slow");
+                imgTag.addClass("show");
+            }
+        });
+
+        $("#popupImg").on("click", function(){
+            $("div.popup").hide("slow");
         });
     }
 
@@ -269,8 +342,7 @@
         $("#replyDelBtn").click(function(evt) {
 
             var $modal = $(evt.target.offsetParent),
-                rno = $modal.find("h5.modal-title").html(),
-                text = $modal.find("input[type=text]").val();
+                rno = $modal.find("h5.modal-title").html();
 
             $.ajax({
                 type: "delete",
@@ -339,6 +411,7 @@
         // 템플릿 컴파일
         replyListTemplate = Handlebars.compile($("#replyList-template").html());
         paginationTemplate = Handlebars.compile($("#pagination-template").html());
+        fileListTemplate = Handlebars.compile($("#fileList-template").html());
     }
 
     function getPage(url) {
@@ -378,6 +451,37 @@
 
     function zeroFill(number) {
         return ("0"+ number).slice(-2);
+    }
+
+    function getFileInfo(fullName){
+
+        var fileName, imgSrc, getLink, fileLink;
+
+        if(checkImageType(fullName)){
+            imgSrc = gContextPath +"/board/displayFile?fileName="+ encodeURIComponent(fullName);
+            fileLink = fullName.substr(14);
+
+            var front = fullName.substr(0,12); // /2015/07/01/
+            var end = fullName.substr(14);
+
+            getLink = gContextPath +"/board/displayFile?fileName="+ front + end;
+
+        }else{
+            imgSrc ="/resources/dist/img/file.png";
+            fileLink = fullName.substr(12);
+
+            getLink = gContextPath +"/board/displayFile?fileName="+ encodeURIComponent(fullName);
+        }
+
+        fileName = fileLink.substr(fileLink.indexOf("_")+1);
+
+        return {fileName: fileName, imgSrc: imgSrc, getLink: getLink, fullName: fullName};
+    }
+
+    function checkImageType(fileName) {
+
+        var pattern = /jpg|gif|png|jpeg/i;
+        return fileName.match(pattern);
     }
 </script>
 
@@ -430,4 +534,13 @@
     {{#if showLast}}
         <li class="page-item"><a class="page-link" href="#" data-page="{{totalPageCount}}">마지막</a></li>
     {{/if}}
+</script>
+
+<script id="fileList-template" type="text/x-handlebars-template">
+    <li data-src="{{fullName}}">
+        <span class="mailbox-attachment-icon has-img">&nbsp;<img src="{{imgSrc}}" alt="Attachment"></span>
+        <div class="mailbox-attachment-info">
+            <a href="{{getLink}}" class="mailbox-attachment-name"><i class="fas fa-camera"></i>&nbsp;{{fileName}}</a>
+        </div>
+    </li>
 </script>

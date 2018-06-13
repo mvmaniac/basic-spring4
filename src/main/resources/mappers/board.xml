@@ -21,6 +21,16 @@
       VALUES(#{title}, #{content}, #{writer})
     </insert>
 
+    <insert id="insertAttach" parameterType="string">
+      INSERT INTO tbl_attach(fullname, bno)
+      VALUES(#{fullname}, LAST_INSERT_ID())
+    </insert>
+
+    <insert id="insertAttach" parameterType="hashmap">
+      INSERT INTO tbl_attach(fullname, bno)
+      VALUES(#{fullname}, #{bno})
+    </insert>
+
     <update id="update" parameterType="BoardVO">
       UPDATE tbl_board SET title = #{title}, content = #{content}
       WHERE bno = #{bno}
@@ -38,6 +48,10 @@
 
     <delete id="delete" parameterType="int">
        DELETE FROM tbl_board WHERE bno = #{bno}
+    </delete>
+
+    <delete id="deleteAttach" parameterType="int">
+       DELETE FROM tbl_attach WHERE bno = #{bno}
     </delete>
 
     <select id="selectAll" resultType="BoardVO">
@@ -70,6 +84,13 @@
       SELECT bno, title, content, writer, regdate, viewcnt, replycnt
       FROM tbl_board
       WHERE bno = #{bno}
+    </select>
+
+    <select id="selectByAttach" parameterType="int" resultType="string">
+      SELECT fullName
+      FROM tbl_attach
+      WHERE bno = #{bno}
+      ORDER BY regdate
     </select>
 
     <sql id="search">
