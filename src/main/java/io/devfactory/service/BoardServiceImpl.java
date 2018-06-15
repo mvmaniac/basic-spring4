@@ -58,7 +58,7 @@ public class BoardServiceImpl implements BoardService {
         if (files == null) { return; }
 
         for (String fileName : files) {
-            boardMapper.insertAttach(fileName, bno);
+            boardMapper.insertAttachReplace(fileName, bno);
         }
     }
 

@@ -26,7 +26,7 @@
       VALUES(#{fullname}, LAST_INSERT_ID())
     </insert>
 
-    <insert id="insertAttach" parameterType="hashmap">
+    <insert id="insertAttachReplace" parameterType="hashmap">
       INSERT INTO tbl_attach(fullname, bno)
       VALUES(#{fullname}, #{bno})
     </insert>

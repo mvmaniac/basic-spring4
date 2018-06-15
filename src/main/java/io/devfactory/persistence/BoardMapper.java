@@ -19,7 +19,7 @@ public interface BoardMapper {
 
     public void insertAttach(String fullName);
 
-    public void insertAttach(String fullName, int bno);
+    public void insertAttachReplace(String fullName, int bno);
 
     public void update(BoardVO vo);
 
