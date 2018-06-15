@@ -33,7 +33,7 @@
             <AppenderRef ref="Console"/>
         </Logger>
 
-        <!-- 3rdparty Loggers -->
+        <!-- spring -->
         <logger name="org.springframework.core" level="INFO" additivity="false">
             <AppenderRef ref="Console"/>
         </logger>
@@ -44,6 +44,14 @@
             <AppenderRef ref="Console"/>
         </logger>
         <logger name="org.springframework.web" level="INFO" additivity="false">
+            <AppenderRef ref="Console"/>
+        </logger>
+
+        <!-- apache commons -->
+        <logger name="org.apache.commons.digester" level="INFO" additivity="false">
+            <AppenderRef ref="Console"/>
+        </logger>
+        <logger name="org.apache.commons.beanutils" level="INFO" additivity="false">
             <AppenderRef ref="Console"/>
         </logger>
 
