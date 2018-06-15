@@ -58,12 +58,12 @@ public class UserController {
             }
 
         } catch (Exception e) {
-            logger.error("/login error : {}", dto, e);
+            logger.error("/loginPost error : {}", dto, e);
         }
     }
 
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
-    public void logout(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+    public String logout(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 
         Object obj = session.getAttribute("login");
 
@@ -89,7 +89,9 @@ public class UserController {
                 }
             }
         } catch (Exception e) {
-            logger.error("/login error : {}", obj, e);
+            logger.error("/logout error : {}", obj, e);
         }
+
+        return "user/login";
     }
 }

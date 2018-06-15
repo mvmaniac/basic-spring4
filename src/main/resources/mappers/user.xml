@@ -3,7 +3,7 @@
 
 <mapper namespace="io.devfactory.persistence.UserMapper">
 
-    <select id="login" parameterType="UserDTO" resultType="UserVO">
+    <select id="login" parameterType="LoginDTO" resultType="UserVO">
       SELECT uid, upw, uname
       FROM tbl_user
       WHERE uid = #{uid} AND upw = #{upw}
@@ -15,7 +15,7 @@
       WHERE sessionKey = #{value}  and sessionlimit &gt; now()
     </select>
 
-    <update id="update" parameterType="hashmap">
+    <update id="keepLogin" parameterType="hashmap">
       UPDATE tbl_user SET sessionKey = #{sessionId}, sessionLimit = #{next}
       WHERE uid = #{uid}
     </update>

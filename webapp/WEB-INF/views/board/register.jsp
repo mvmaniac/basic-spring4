@@ -54,7 +54,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="writer">Writer</label>
-                                <input type="text" class="form-control" id="writer" name="writer" placeholder="Enter Write" />
+                                <input type="text" class="form-control" id="writer" name="writer" value="${login.uid}" readonly/>
                             </div>
                             <div class="form-group">
                                 <label for="files">File DROP Here</label>

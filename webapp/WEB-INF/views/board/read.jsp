@@ -1,4 +1,4 @@
-<%--suppress ES6ConvertVarToLetConst --%>
+<%--suppress ELValidationInJSP ES6ConvertVarToLetConst --%>
 <%@ page contentType="text/html;charset=utf-8" pageEncoding="utf-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
@@ -6,12 +6,6 @@
     .popup { position: absolute; }
     .back { background-color: gray; opacity:0.5; width: 100%; height: 300%; overflow: hidden; z-index:1101; }
     .front { z-index: 1110; opacity: 1; border: 1px; margin: auto; }
-    .show{
-        position:relative;
-        max-width: 1200px;
-        max-height: 800px;
-        overflow: auto;
-    }
 </style>
 
 <!-- content header (page header) -->
@@ -60,8 +54,10 @@
                         </div>
                     </div>
                     <div class="card-footer">
-                        <button type="button" class="btn btn-warning btn-sm" id="modify">Modify</button>
-                        <button type="button" class="btn btn-danger btn-sm" id="remove">Remove</button>
+                        <c:if test="${login.uid == boardVO.writer}">
+                            <button type="button" class="btn btn-warning btn-sm" id="modify">Modify</button>
+                            <button type="button" class="btn btn-danger btn-sm" id="remove">Remove</button>
+                        </c:if>
                         <button type="button" class="btn btn-default btn-sm" id="list">List All</button>
                     </div>
                 </div>
@@ -80,30 +76,37 @@
                 <!-- // reply list -->
 
                 <!-- reply form -->
-                <div class="card card-outline">
-                    <div class="card-header">
-                        <h3 class="card-title">Add New Reply</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label for="replyer">Replyer</label>
-                            <input type="text" class="form-control" id="replyer" name="replyer" placeholder="Replyer" />
+                <c:if test="${not empty login}">
+                    <div class="card card-outline">
+                        <div class="card-header">
+                            <h3 class="card-title">Add New Reply</h3>
                         </div>
-                        <div class="form-group">
-                            <label for="replytext">Reply Text</label>
-                            <input type="text" class="form-control" id="replytext" name="replytext" placeholder="Reply Text" />
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="replyer">Replyer</label>
+                                <input type="text" class="form-control" id="replyer" name="replyer" value="${login.uid}" readonly/>
+                            </div>
+                            <div class="form-group">
+                                <label for="replytext">Reply Text</label>
+                                <input type="text" class="form-control" id="replytext" name="replytext" placeholder="Reply Text" />
+                            </div>
+                            <div class="card-footer bg-white">
+                                <ul class="mailbox-attachments clearfix attachList">
+                                </ul>
+                            </div>
                         </div>
-                        <div class="card-footer bg-white">
-                            <ul class="mailbox-attachments clearfix attachList">
-                            </ul>
+                        <div class="card-footer">
+                            <button type="button" class="btn btn-warning btn-sm" id="reply">Add Reply</button>
                         </div>
                     </div>
-                    <div class="card-footer">
-                        <button type="button" class="btn btn-warning btn-sm" id="reply">Add Reply</button>
-                    </div>
-                </div>
+                </c:if>
                 <!-- // reply form -->
 
+                <c:if test="${empty login}">
+                    <div class="card card-outline">
+                        <div><a href="<c:url value="/user/login" />">Login Please</a></div>
+                    </div>
+                </c:if>
             </div>
         </div>
         <!-- // row -->
@@ -408,6 +411,17 @@
             return rownum - idx;
         });
 
+        Handlebars.registerHelper("eqReplyer", function(replyer, block) {
+
+            var accum = "";
+
+            if (replyer === "${login.uid}") {
+                accum += block.fn();
+            }
+
+            return accum;
+        });
+
         // 템플릿 컴파일
         replyListTemplate = Handlebars.compile($("#replyList-template").html());
         paginationTemplate = Handlebars.compile($("#pagination-template").html());
@@ -497,7 +511,9 @@
                 <h3 class="timeline-header"><strong>{{rownum ../paging @index}}</strong>&nbsp;-&nbsp;{{replyer}}</h3>
                 <div class="timeline-body">{{replytext}}</div>
                 <div class="timeline-footer">
-                    <a class="btn btn-default btn-sm" data-toggle="modal" data-target="#modifyModal">Modify</a>
+                    {{#eqReplyer replyer}}
+                        <a class="btn btn-default btn-sm" data-toggle="modal" data-target="#modifyModal">Modify</a>
+                    {{/eqReplyer}}
                 </div>
             </div>
         </li>
