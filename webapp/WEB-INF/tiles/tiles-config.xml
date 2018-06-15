@@ -22,6 +22,9 @@
         </put-list-attribute>
     </definition>
 
+    <definition name="user/login" template="/WEB-INF/views/user/login.jsp">
+        <put-attribute name="title" value="Login" />
+    </definition>
     <definition name="index" extends="layout">
         <put-attribute name="content" value="/WEB-INF/views/home.jsp" />
     </definition>
